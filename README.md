@@ -253,7 +253,6 @@ From solution root:
 ```bash
 dotnet restore
 dotnet build
-dotnet test
 dotnet run --project SmartCart.Api --launch-profile https
 ```
 
@@ -311,6 +310,50 @@ http://localhost:5173
 - Responsive UI layout  
 - Swagger documentation enabled  
 
+---
+
+# 📌 Assumptions
+
+The following assumptions were made while implementing this solution:
+
+1. **Single-user cart context**
+   - Cart is identified by a `cartId` (GUID).
+   - No authentication or multi-user session handling is implemented.
+
+2. **In-memory data storage**
+   - Products, carts, and orders are stored in memory.
+   - Data resets when the application restarts.
+
+3. **Coupon handling**
+   - Only one coupon can be applied per cart.
+   - Coupon validation is performed at application time and revalidated during checkout.
+
+4. **Tax calculation**
+   - A flat 5% tax is applied during checkout.
+   - Tax is calculated on the subtotal after discount.
+
+5. **Atomic checkout**
+   - Checkout ensures stock validation before order creation.
+   - If stock validation fails, no partial updates occur.
+
+6. **Frontend-backend integration**
+   - Frontend assumes backend runs locally.
+   - Backend expected at: `https://localhost:7180`
+
+7. **HTTPS profile usage**
+   - Backend should be run using the HTTPS launch profile.
+   - If certificate trust issues occur, run:
+     ```
+     dotnet dev-certs https --trust
+     ```
+	 
+8. **No payment gateway integration**
+   - Checkout completes immediately without external payment processing.
+
+9. **Concurrency**
+   - Basic locking mechanism used for stock consistency.
+   - Advanced distributed locking not implemented (out of scope).
+   
 ---
 
 # 📈 Future Improvements
