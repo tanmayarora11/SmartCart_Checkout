@@ -5,7 +5,7 @@ A full-stack mini e-commerce checkout system built using:
 - **Backend:** ASP.NET Core Web API (.NET 8)
 - **Frontend:** React + TypeScript (Vite)
 - **Architecture:** Clean layered architecture
-- **Testing:** xUnit (Unit tests)
+- **Testing:** xUnit (Unit + Integration-style tests)
 
 This project demonstrates backend business rule enforcement, clean API design, atomic checkout handling, and frontend state management with a responsive UI.
 
@@ -23,6 +23,7 @@ This project demonstrates backend business rule enforcement, clean API design, a
 - Centralized exception handling middleware
 - Swagger / OpenAPI documentation
 - In-memory data store (for demo simplicity)
+- DTO-based API contracts (separation of domain models and response models)
 
 ## ✅ Frontend (React + TypeScript)
 
@@ -33,6 +34,7 @@ This project demonstrates backend business rule enforcement, clean API design, a
 - Checkout flow with confirmation screen
 - Responsive layout
 - Loading & error handling states
+- Strong typing via `types.ts`
 
 ---
 
@@ -56,6 +58,7 @@ Returns all available products:
 Add or update cart items.
 
 Request body:
+
 ```json
 {
   "productId": "GUID",
@@ -64,21 +67,23 @@ Request body:
 ```
 
 Quantity acts as a delta:
-- `+1` increases quantity
-- `-1` decreases quantity
-- When quantity becomes `0`, item is removed
+
+- `+1` increases quantity  
+- `-1` decreases quantity  
+- When quantity becomes `0`, item is removed  
 
 ---
 
 ### `GET /api/cart/{cartId}`
+
 Returns cart details:
 
-- Product name
-- Unit price
-- Quantity
-- Line total
-- Subtotal
-- Applied coupon (if any)
+- Product name  
+- Unit price  
+- Quantity  
+- Line total  
+- Subtotal  
+- Applied coupon (if any)  
 
 ---
 
@@ -87,6 +92,7 @@ Returns cart details:
 Apply a coupon to the cart.
 
 Request body:
+
 ```json
 {
   "couponCode": "FLAT50"
@@ -101,11 +107,11 @@ Creates an order and reduces stock atomically.
 
 Returns:
 
-- Subtotal
-- Discount
-- Tax (5%)
-- Grand total
-- Purchased items
+- Subtotal  
+- Discount  
+- Tax (5%)  
+- Grand total  
+- Purchased items  
 
 ---
 
@@ -121,9 +127,9 @@ Returns order summary details.
 
 ## Cart Rules
 
-- Final cart quantity must be > 0
-- If quantity becomes 0 → item removed
-- Cannot exceed available stock
+- Final cart quantity must be > 0  
+- If quantity becomes 0 → item removed  
+- Cannot exceed available stock  
 
 ## Coupon Rules
 
@@ -134,14 +140,14 @@ Returns order summary details.
 
 ## Checkout Rules
 
-- Checkout is atomic
-- If stock validation fails → no partial update
-- Stock is reduced only after successful validation
+- Checkout is atomic  
+- If stock validation fails → no partial update  
+- Stock is reduced only after successful validation  
 
 ## Tax
 
-- 5% tax applied at checkout
-- Shown in final order summary
+- 5% tax applied at checkout  
+- Included in final order summary  
 
 ---
 
@@ -164,42 +170,13 @@ SmartCart.Api
  │    └── Coupons (Strategy Pattern)
  ├── Interfaces
  ├── Models
+ ├── DTOs
  ├── Data (InMemoryStore)
  ├── Middleware (Exception handling)
  └── Program.cs
 ```
 
-### Design Principles Used
-
-- SOLID principles
-- Dependency Injection
-- Strategy Pattern (Coupon logic)
-- Separation of Concerns
-- Centralized error handling
-- DTO-based API responses
-
----
-
-# 🧪 Testing
-
-Implemented using **xUnit**.
-
-Test coverage includes:
-
-- Coupon validation logic
-- Checkout pricing calculation
-- Stock exceeded scenario
-- Quantity validation
-
-Run tests:
-
-```bash
-dotnet test
-```
-
----
-
-# 🖥️ Frontend Structure
+### Frontend Structure
 
 ```
 SmartCart.Frontend
@@ -209,8 +186,43 @@ SmartCart.Frontend
  │    ├── CheckoutSuccess.tsx
  ├── services
  │    └── api.ts
+ ├── types
+ │    └── types.ts
  ├── App.tsx
+ ├── App.css
  └── main.tsx
+```
+
+### Design Principles Used
+
+- SOLID principles  
+- Dependency Injection  
+- Strategy Pattern (Coupon logic)  
+- Separation of Concerns  
+- Centralized error handling  
+- DTO-based API responses  
+
+---
+
+# 🧪 Testing
+
+Implemented using **xUnit**.
+
+### Test Types
+
+**Unit Tests**
+- Coupon validation logic
+- Checkout pricing calculation
+- Stock exceeded scenario
+- Quantity validation
+
+**Integration-style Tests**
+- API-level checkout validation using `WebApplicationFactory`
+
+Run tests from solution root:
+
+```bash
+dotnet test
 ```
 
 ---
@@ -234,18 +246,15 @@ Available coupons:
 
 # ⚙️ How to Run the Project
 
-## Backend
+## Run Entire Solution (Recommended)
 
-Navigate to backend folder:
-
-```bash
-cd SmartCart.Api
-```
-
-Run:
+From solution root:
 
 ```bash
-dotnet run
+dotnet restore
+dotnet build
+dotnet test
+dotnet run --project SmartCart.Api --launch-profile https
 ```
 
 Swagger available at:
@@ -253,6 +262,12 @@ Swagger available at:
 ```
 https://localhost:7180/swagger
 ```
+
+> If HTTPS certificate warning appears, run:
+>
+> ```
+> dotnet dev-certs https --trust
+> ```
 
 ---
 
@@ -282,27 +297,29 @@ App runs at:
 http://localhost:5173
 ```
 
+> Ensure backend is running on `https://localhost:7180` before starting frontend.
+
 ---
 
 # 🔒 Non-Functional Considerations
 
-- Backend validation on all endpoints
-- Centralized exception handling middleware
-- Atomic checkout handling
-- Clean separation of layers
-- Type-safe frontend using TypeScript
-- Responsive UI layout
-- Swagger documentation enabled
+- Backend validation on all endpoints  
+- Centralized exception handling middleware  
+- Atomic checkout handling  
+- Clean separation of layers  
+- Type-safe frontend using TypeScript  
+- Responsive UI layout  
+- Swagger documentation enabled  
 
 ---
 
 # 📈 Future Improvements
 
-- Persistent database integration
-- Authentication & user-based carts
-- Payment gateway integration
-- Docker containerization
-- CI/CD pipeline setup
+- Persistent database integration  
+- Authentication & user-based carts  
+- Payment gateway integration  
+- Docker containerization  
+- CI/CD pipeline setup  
 
 ---
 
@@ -310,10 +327,10 @@ http://localhost:5173
 
 This project demonstrates:
 
-- Full-stack development capability
-- Clean architecture implementation
-- Business rule enforcement
-- Proper API design
-- State management in frontend
-- Testing practices
-- Scalable and maintainable code structure
+- Full-stack development capability  
+- Clean architecture implementation  
+- Business rule enforcement  
+- Proper API design  
+- State management in frontend  
+- Testing practices  
+- Scalable and maintainable code structure  

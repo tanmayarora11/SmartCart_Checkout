@@ -37,11 +37,8 @@ store.Products.AddRange(new List<Product>
     new() { Id = Guid.NewGuid(), Name = "Keyboard", Price = 1500, Stock = 20 }
 });
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors("AllowFrontend");
