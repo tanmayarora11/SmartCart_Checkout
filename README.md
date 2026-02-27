@@ -251,7 +251,7 @@ dotnet run
 Swagger available at:
 
 ```
-https://localhost:{port}/swagger
+https://localhost:7180/swagger
 ```
 
 ---
